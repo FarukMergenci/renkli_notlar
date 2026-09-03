@@ -9,7 +9,7 @@ class NotificationService {
 
   NotificationService._internal();
 
-  Future<void> init() async {
+    Future<void> init() async {
     tz.initializeTimeZones();
 
     const AndroidInitializationSettings initializationSettingsAndroid =
@@ -25,18 +25,27 @@ class NotificationService {
     final LinuxInitializationSettings initializationSettingsLinux =
         const LinuxInitializationSettings(defaultActionName: 'Open app');
 
+    // 🔴 Windows için gerekli olan eksik ayar nesnesi:
+    // Bu ayarlar Windows Toast bildirimlerinin kayıt defterine (registry) 
+    // düzgün işlenmesi için gereklidir.
+    const WindowsInitializationSettings initializationSettingsWindows =
+        WindowsInitializationSettings(
+      appName: 'Renkli Notlar', // Uygulama adınız
+    );
+
     final InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsDarwin,
       macOS: initializationSettingsDarwin,
       linux: initializationSettingsLinux,
+      windows: initializationSettingsWindows, // 🔴 Buraya ekledik
     );
 
     await _notificationsPlugin.initialize(
-      settings: initializationSettings,
+      initializationSettings, // 'settings:' isimlendirmesi güncel sürümlerde doğrudan ilk parametredir
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        // Handle notification click if needed
+        // Gerekirse bildirim tıklama olayını yönetin
       },
     );
   }
