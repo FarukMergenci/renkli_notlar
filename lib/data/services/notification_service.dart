@@ -9,7 +9,7 @@ class NotificationService {
 
   NotificationService._internal();
 
-    Future<void> init() async {
+     Future<void> init() async {
     tz.initializeTimeZones();
 
     const AndroidInitializationSettings initializationSettingsAndroid =
@@ -25,12 +25,12 @@ class NotificationService {
     final LinuxInitializationSettings initializationSettingsLinux =
         const LinuxInitializationSettings(defaultActionName: 'Open app');
 
-    // 🔴 Windows için gerekli olan eksik ayar nesnesi:
-    // Bu ayarlar Windows Toast bildirimlerinin kayıt defterine (registry) 
-    // düzgün işlenmesi için gereklidir.
-    const WindowsInitializationSettings initializationSettingsWindows =
+    // ✅ Windows için zorunlu parametreleri içeren hatasız ayar:
+    final WindowsInitializationSettings initializationSettingsWindows =
         WindowsInitializationSettings(
-      appName: 'Renkli Notlar', // Uygulama adınız
+      appName: 'Renkli Notlar',
+      appUserModelId: 'com.example.renkli_notlar.app', // Uygulama paket adınız (herhangi benzersiz bir ID olabilir)
+      guid: '3f0b2f9c-76e3-4d6a-8d1e-9f4a2b1c0d3e', // Windows için benzersiz rastgele bir GUID (Bu şekilde kalabilir)
     );
 
     final InitializationSettings initializationSettings =
@@ -39,16 +39,18 @@ class NotificationService {
       iOS: initializationSettingsDarwin,
       macOS: initializationSettingsDarwin,
       linux: initializationSettingsLinux,
-      windows: initializationSettingsWindows, // 🔴 Buraya ekledik
+      windows: initializationSettingsWindows, // ✅ Buraya eklendi
     );
 
+    // ✅ Hataya sebep olan 'settings:' kaldırıldı, doğrudan parametre olarak verildi
     await _notificationsPlugin.initialize(
-      initializationSettings, // 'settings:' isimlendirmesi güncel sürümlerde doğrudan ilk parametredir
+      initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        // Gerekirse bildirim tıklama olayını yönetin
+        // Bildirim tıklama olayları
       },
     );
   }
+
 
   Future<bool> requestPermissions() async {
     final androidImplementation =
