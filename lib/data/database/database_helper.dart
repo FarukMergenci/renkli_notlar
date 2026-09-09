@@ -1,6 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import '../models/category_model.dart';
 import '../models/note_model.dart';
 
@@ -12,6 +13,10 @@ class DatabaseHelper {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
+    if (Platform.isWindows || Platform.isLinux) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+    }
     _database = await _initDB('renkli_notlar.db');
     return _database!;
   }

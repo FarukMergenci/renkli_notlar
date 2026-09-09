@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'data/services/notification_service.dart';
 import 'providers/category_provider.dart';
 import 'providers/note_provider.dart';
@@ -11,6 +13,12 @@ import 'ui/screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Desktop (Windows/Linux) SQLite initialization
+  if (Platform.isWindows || Platform.isLinux) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
 
   // Initialize Turkish date formatting
   await initializeDateFormatting('tr_TR', null);

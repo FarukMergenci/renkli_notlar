@@ -1,0 +1,47 @@
+name: Windows Desktop Build
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Enable Windows Desktop Support
+        run: flutter config --enable-windows-desktop
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run static analysis
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build Windows Executable
+        run: flutter build windows --release
+
+      - name: Compress Build Artifact
+        run: |
+          Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath renkli_notlar_windows.zip
+
+      - name: Upload Windows Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RenkliNotlar-Windows-Release
+          path: renkli_notlar_windows.zip
