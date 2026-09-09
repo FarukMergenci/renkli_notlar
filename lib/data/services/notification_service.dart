@@ -44,7 +44,7 @@ class NotificationService {
 
     // ✅ Hataya sebep olan 'settings:' kaldırıldı, doğrudan parametre olarak verildi
     await _notificationsPlugin.initialize(
-      initializationSettings,
+      settings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         // Bildirim tıklama olayları
       },
