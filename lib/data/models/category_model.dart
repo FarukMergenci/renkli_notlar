@@ -14,6 +14,7 @@ class CategoryModel {
   });
 
   Color get color => Color(colorValue);
+  // ignore: non_const_argument_for_const_parameter
   IconData get icon => IconData(iconCode, fontFamily: 'MaterialIcons');
 
   Map<String, dynamic> toMap() {
